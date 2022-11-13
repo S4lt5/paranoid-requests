@@ -4,10 +4,9 @@ Paranoid wrapper around requests and grequests to automatically impersonate user
 This project is designed to help those performing web-based pen testing, analytics, scraping, or other potentially
 risky activities a degree of both safety and scalability.
 
-It provides wrappers around (requests)[https://github.com/psf/requests] and (aiohttp)[https://github.com/aio-libs/aiohttp] 
+It provides wrappers around [requests](https://github.com/psf/requests) and [aiohttp](https://github.com/aio-libs/aiohttp)
 that can be used interchangably with the original modules, so that the 'paranoid' version may be dropped in without otherwise 
 altering the source tool or script.
-
 
 ## Note on dangers of using public proxies
 

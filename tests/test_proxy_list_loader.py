@@ -27,6 +27,10 @@ class TestProxyListLoader:
         
         assert len(proxyList.proxies) == 10
 
-        # assert I can read far more than 10 out of the generator
-        for x in range(200):
+        # assert I can read far more than 10 out of the generator, try to read len * 2
+        for x in range(20):
             proxyList.GetNextProxy()
+
+    
+
+        

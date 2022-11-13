@@ -21,8 +21,7 @@ class InvalidProxyError(Exception):
     """
 
 
-#Thanks https://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
-PROXY_REGEX=re.compile("^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):([\\d]+)$")
+
 
 class ProxyList:
 
@@ -47,11 +46,10 @@ class ProxyList:
     
     def GetNextProxy(self):
         return next(self.generator)
-        
-    
-    
+                
 
-
+#for determining if a host is valid
+PROXY_REGEX=re.compile("^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):([\\d]+)$")
 
 class ProxyListLoader:
     def fromTextFile(input_path):
@@ -72,7 +70,7 @@ class ProxyListLoader:
 
 
     def parseProxyEntry(line):
-        """Validate a line of text iput that will be turned into a proxy entry"""                
+        """Validate a line of text iput that will be turned into a proxy entry, then return a tuple of host,port"""                
         match = PROXY_REGEX.search(line)
         if match is None:
             raise InvalidProxyError(f"The proxy entry {line} is not in the correct format of 'host:port'")
