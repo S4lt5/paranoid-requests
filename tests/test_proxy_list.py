@@ -1,12 +1,15 @@
-from paranoid_requests.paranoid_core import ProxyList,MissingProxyListError, InvalidProxyError
+"""Tests for basic proxylist functionality"""
 import pytest
+from paranoid_requests.paranoid_core import ProxyList,MissingProxyListError, InvalidProxyError
+
 
 class TestProxyList:
     """
     Test basic ProxyList functionality
     """
     def test_bad_list_fails(self):
-        
+        """Test that missing or invalid proxy list throws an error"""
+
         with pytest.raises(MissingProxyListError):
             ProxyList(proxies=None)
 
@@ -17,17 +20,16 @@ class TestProxyList:
             ProxyList({})
 
     def test_invalid_object_string_fails(self):
+        """Test that bad values for an individual proxy line throw an error """
         # a string is a collection, but does not have the right tuples inside
         with pytest.raises(InvalidProxyError):
             ProxyList("foo")
-        
+
         with pytest.raises(InvalidProxyError):
             ProxyList([(1,2,3)])
-        
+
         #this should throw no exception...
         ProxyList([(1,2)])
         # but we add an invalid item to the list and it should now.
         with pytest.raises(InvalidProxyError):
             ProxyList([(1,2),None])
-
-    
