@@ -18,7 +18,7 @@ class TestProxyListLoader:
         """Test that invalid files or paths fail. Test that a good file loads successfully and can
         infinitely generate proxies from said list"""
         assert os.path.exists(TestProxyListLoader.empty_path)
-        with pytest.raises(MissingProxyListError):
+        with pytest.raises(InvalidProxyError):
             ProxyListLoader.from_text_file(TestProxyListLoader.empty_path)
 
         assert os.path.exists(TestProxyListLoader.bad_path)

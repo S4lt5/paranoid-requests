@@ -62,15 +62,23 @@ class ProxyListLoader:
         if not os.path.exists(input_path) or not os.path.isfile(input_path):
             raise FileNotFoundError(f"The input file {input_path} does not exist.")
 
-        proxies = []
+    
         with open(input_path,'r') as file:
-            lines = file.readlines()
-            for line in lines:
-                line = line.strip()
-                proxy = ProxyListLoader.parse_proxy_entry(line)
-                proxies.append(proxy)
+            content = file.read()                        
+            return ProxyListLoader.from_string(content)
 
+    @staticmethod
+    def from_string(proxylist_contents):
+        """Read a proxy list from a string, one proxy per line in host:port format"""
+        proxies = []
+        for line in proxylist_contents.split("\n"):             
+            line = line.strip()            
+            proxy = ProxyListLoader.parse_proxy_entry(line)
+            proxies.append(proxy)
+
+        
         return ProxyList(proxies=proxies)
+
 
     @staticmethod
     def parse_proxy_entry(line):
