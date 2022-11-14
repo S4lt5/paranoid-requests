@@ -1,3 +1,5 @@
+[![Lint and Test](https://github.com/Yablargo/paranoid-requests/actions/workflows/pylint_and_test.yml/badge.svg)](https://github.com/Yablargo/paranoid-requests/actions/workflows/pylint_and_test.yml)
+
 # paranoid-requests
 Paranoid wrapper around requests and grequests to automatically impersonate users and use randomized proxies.
 
