@@ -8,7 +8,7 @@ It provides wrappers around [requests](https://github.com/psf/requests) and [aio
 that can be used interchangably with the original modules, so that the 'paranoid' version may be dropped in without otherwise 
 altering the source tool or script.
 
-HTTP Proxies provided by https://github.com/TheSpeedX/PROXY-List/blob/master/http.txt and served through jsdelivr! ❤️
+HTTP Proxies provided by https://github.com/TheSpeedX/PROXY-List and served through jsdelivr! ❤️
 
 User Agents provided by https://github.com/Kikobeats/top-user-agents and servd through jsdeliver! ❤️
 
