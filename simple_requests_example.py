@@ -1,9 +1,6 @@
 import paranoid_requests.requests_wrapper as noided_requests
 import requests
 
-
-
-
 # First, get my IP from ifconfig.co
 host_addr = "http://ifconfig.co"
 
