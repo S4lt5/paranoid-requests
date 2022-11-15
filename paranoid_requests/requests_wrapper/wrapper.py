@@ -6,10 +6,12 @@ import random
 
 
 class ParanoidConfig:
+    """Contains configuration of which proxies to use, and when to use a new identity"""
     configuration = None
     @classmethod
     def get_config(cls):
-        if cls.configuration == None:
+        """Get the ParanoidConfig, or create a new one if it does not exist"""
+        if cls.configuration is None:
             configure()
 
         return cls.configuration
@@ -42,6 +44,7 @@ class ParanoidConfig:
 
 
 def configure(new_identity_per_request=False,http_proxy_list=None,https_proxy_list=None,user_agent_list=None):
+    """Change Paranoid Requests Wrapper Config"""
     ParanoidConfig.configuration = ParanoidConfig(new_identity_per_request=new_identity_per_request,
                                         http_proxy_list=http_proxy_list,
                                         https_proxy_list=https_proxy_list,
@@ -50,36 +53,59 @@ def configure(new_identity_per_request=False,http_proxy_list=None,https_proxy_li
 
 
 def delete(url, params=None,**kwargs):
+    """Wrapper for the requests function of the same name"""
     if ParanoidConfig.get_config().new_identity_per_request:
-        s = Session()
-        return s.delete(url, params=params,**kwargs)
-    else:
-        return requests.delete(url,params=params,**kwargs)
+        return Session().delete(url, params=params,**kwargs)
+
+    return requests.delete(url,params=params,**kwargs)
 
 def get(url,params=None,**kwargs):
+    """Wrapper for the requests function of the same name"""
     if ParanoidConfig.get_config().new_identity_per_request:
-        s = Session()
-        return s.get(url, params=params,**kwargs)
-    else:
-        return requests.get(url,params=params,**kwargs)
+        return Session().get(url, params=params,**kwargs)
+
+    return requests.get(url,params=params,**kwargs)
 
 def head(url, params=None,**kwargs):
+    """Wrapper for the requests function of the same name"""
+    if ParanoidConfig.get_config().new_identity_per_request:
+        return Session().head(url, params=params,**kwargs)
+
     return requests.head(url,params=params,**kwargs)
 
 def options(url, params=None,**kwargs):
+    """Wrapper for the requests function of the same name"""
+    if ParanoidConfig.get_config().new_identity_per_request:
+        return Session().options(url, params=params,**kwargs)
+
     return requests.options(url,params=params,**kwargs)
 
 def patch(url, params=None,**kwargs):
+    """Wrapper for the requests function of the same name"""
+    if ParanoidConfig.get_config().new_identity_per_request:
+        return Session().patch(url, params=params,**kwargs)
+
     return requests.patch(url,params=params,**kwargs)
 
 def post(url, params=None,**kwargs):
+    """Wrapper for the requests function of the same name"""
+    if ParanoidConfig.get_config().new_identity_per_request:
+        return Session().post(url, params=params,**kwargs)
+
     return requests.post(url,params=params,**kwargs)
 
 def put(url, params=None,**kwargs):
+    """Wrapper for the requests function of the same name"""
+    if ParanoidConfig.get_config().new_identity_per_request:
+        return Session().put(url, params=params,**kwargs)
+
     return requests.put(url,params=params,**kwargs)
 
 def request(url, params=None,**kwargs):
-    print("I GOT A REQUEST YO")
+    """Wrapper for the requests function of the same name"""
+    if ParanoidConfig.get_config().new_identity_per_request:
+        return Session().request(url, params=params,**kwargs)
+
     return requests.request(url,params=params,**kwargs)
 
 class Session(requests.Session):
@@ -94,6 +120,7 @@ class Session(requests.Session):
             "http": http_proxy,
             "https": https_proxy
         }
+        #TODO -- Use new user agents, duh
 
     def request(
         self,
@@ -123,4 +150,3 @@ def session():
 
 #Access wrapped module with requests member
 requests = requests
-

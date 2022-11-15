@@ -28,7 +28,7 @@ class InvalidProxyError(Exception):
 class ProxyList:
     """A list of proxies, to be used in creating a round-robin generator
     exposed via the get_next_proxy() method"""
-    def __init__(self, proxies=[]):
+    def __init__(self, proxies=None):
         """
         Take the passed proxy list, or create a blank one
 
@@ -38,15 +38,15 @@ class ProxyList:
             raise MissingProxyListError("A non empty proxylist must be provided to ProxyList()")
 
         for prox in proxies:
-            if validators.url(str(prox)) != True:
+            if validators.url(str(prox)) is not True:
                 raise InvalidProxyError("Each https proxy specified must be a valid url")
 
 
         # do I really need this?
         self.proxies = proxies
-        
+
         #Create an infinite iterator that cycles through all of the proxies
-        self.generator = itertools.cycle(self.proxies)        
+        self.generator = itertools.cycle(self.proxies)
 
     def get_next_proxy(self):
         """Return the next proxy URL"""
@@ -96,23 +96,23 @@ class ProxyListLoader:
     public_http_proxies_url = "https://cdn.jsdelivr.net/gh/monosans/proxy-list@main/proxies_geolocation_anonymous/http.txt"
     @staticmethod
     def from_default_public_proxy_list(proxy_type="http"):
-        if proxy_type != "http" and proxy_type != "https":
-            raise ProxyListDownloadError("Must specify http or https for proxy type.")        
         """Load a proxy list from https://github.com/monosans/proxy-list/
         Check the source for up to date licensing info if you want to directly include this."""
+        if proxy_type not in ("http","https"):
+            raise ProxyListDownloadError("Must specify http or https for proxy type.")
+
         resp = requests.get(ProxyListLoader.public_http_proxies_url)
 
         if resp.status_code != 200:
             raise ProxyListDownloadError("Received an error when dowloading the default public proxy list")
         proxies = []
         for line in resp.text.split("\n"):
-            #format:'http://176.192.70.58:8005|Russia|Moscow|Moscow
             items = line.split("|")
             if len(items) != 4:
                 raise ProxyListDownloadError("The proxy list was not in the expected format.")
-            if items[1] == "United States":                
+            if items[1] == "United States":
                 #skip non-USA for performance and safety reasons
-                proxies.append(f"{proxy_type}://{items[0]}")            
+                proxies.append(f"{proxy_type}://{items[0]}")
         return ProxyList(proxies=proxies)
 
 
@@ -122,7 +122,7 @@ class ProxyListLoader:
         """Validate a line of text iput that will be turned into a proxy entry, then return URL"""
         url = str(line).strip()
 
-        if validators.url(line) == True:
+        if validators.url(line) is True:
             return url
-        
-        raise InvalidProxyError(f"Proxy URL {url} is not valid")        
+
+        raise InvalidProxyError(f"Proxy URL {url} is not valid")
