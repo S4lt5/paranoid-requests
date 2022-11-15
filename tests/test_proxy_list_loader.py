@@ -52,7 +52,7 @@ class TestProxyListLoader:
         """Tests for the url-based proxylist loader"""
 
 
-        proxy_list = ProxyListLoader.from_url("https://cdn.jsdelivr.net/gh/Yablargo/paranoid-requests@main/tests/artifacts/test_proxies_good.txt")
+        proxy_list = ProxyListLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/main/tests/artifacts/test_proxies_good.txt")
         assert len(proxy_list.proxies) == 10
 
         assert ('156.239.55.107',3128) in proxy_list.proxies
@@ -69,10 +69,10 @@ class TestProxyListLoader:
 
 
         with pytest.raises(ProxyListDownloadError):
-            proxy_list = ProxyListLoader.from_url("https://cdn.jsdelivr.net/gh/Yablargo/paranoid-requests@main/tests/artifacts/test_proxies_nonexistant.txt")
+            proxy_list = ProxyListLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/main/tests/artifacts/test_proxies_nonexistant.txt")
 
         with pytest.raises(InvalidProxyError):
-            ProxyListLoader.from_url("https://cdn.jsdelivr.net/gh/Yablargo/paranoid-requests@main/tests/artifacts/test_proxies_bad.txt")
+            ProxyListLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/main/tests/artifacts/test_proxies_bad.txt")
 
 
     def test_public_loader(self):

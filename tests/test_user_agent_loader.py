@@ -46,15 +46,15 @@ class TestUserAgentLoader:
         assert "Mozilla/5.0 (X11; Linux x86_64; rv:103.0) Gecko/20100101 Firefox/103.0" in agent_list.user_agents
         assert "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 OPR/92.0.0.0" in agent_list.user_agents
         assert "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36" in agent_list.user_agents
-        # assert I can read far more than 10 out of the generator, try to read len * 5
-        for ctr in range(len(agent_list.user_agents)* 5):
+        # assert I can read far more than 10 out of the generator, try to read len * 2
+        for ctr in range(20):
             agent_list.get_next_user_agent()
 
     def test_url_loader(self):
         """Tests for the url-based proxylist loader"""
 
 
-        agent_list = UserAgentLoader.from_url("https://cdn.jsdelivr.net/gh/Yablargo/paranoid-requests@main/tests/artifacts/test_good_user_agents.json")
+        agent_list = UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/tests/artifacts/test_good_user_agents.json")
         assert len(agent_list.user_agents) == 10
 
         assert "Mozilla/5.0 (Windows NT 10.0; rv:105.0) Gecko/20100101 Firefox/105.0" in agent_list.user_agents
@@ -71,10 +71,10 @@ class TestUserAgentLoader:
 
 
         with pytest.raises(UserAgentListDownloadError):
-            UserAgentLoader.from_url("https://cdn.jsdelivr.net/gh/Yablargo/paranoid-requests@main/tests/artifacts/test_agents_nonexistant.txt")
+            UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/tests/artifacts/test_agents_nonexistant.txt")
 
         with pytest.raises(InvalidUserAgentError):
-            UserAgentLoader.from_url("https://cdn.jsdelivr.net/gh/Yablargo/paranoid-requests@main/tests/artifacts/test_proxies_bad.json")
+            UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/tests/artifacts/test_bad_user_agents.json")
 
 
     def test_public_loader(self):
