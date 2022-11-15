@@ -1,5 +1,5 @@
 [![Tests](https://github.com/Yablargo/paranoid-requests/actions/workflows/test.yml/badge.svg)](https://github.com/Yablargo/paranoid-requests/actions/workflows/pylint_and_test.yml)
-[![Public Lists Online and Up-to-date](https://github.com/Yablargo/paranoid-requests/actions/workflows/public_sources.yml/badge.svg)](https://github.com/Yablargo/paranoid-requests/actions/workflows/public_sources.yml)
+[![Public Lists Online and Updated](https://github.com/Yablargo/paranoid-requests/actions/workflows/public_sources.yml/badge.svg)](https://github.com/Yablargo/paranoid-requests/actions/workflows/public_sources.yml)
 # paranoid-requests
 Paranoid wrapper around requests and grequests to automatically impersonate users and use randomized proxies.
 
