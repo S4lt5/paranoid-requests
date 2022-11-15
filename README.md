@@ -20,10 +20,9 @@ I ask that anyone reading this to take a moment to digest the following statemen
 
 >This is released to enable pen testers do their jobs in good faith. Please try to make today's world 1% better than yesterday's.
 
-## Note on dangers of using public proxies
+## Note on dangers (and horriffic performance) of using public proxies
 
-Please assume any of the public proxies queried by the PublicProxyList class have malicious intent. These are completely free
-and anonymous services that will try to sniff your SSL traffic. 
+Please assume any of the public proxies queried by the PublicProxyList class have malicious intent. These are completely free and anonymous services that will try to sniff your SSL traffic, trick you, or otherwise compromise you.
 
 * Don't pass credentials that are not public
 * Don't put anything through these you don't want released to the world
