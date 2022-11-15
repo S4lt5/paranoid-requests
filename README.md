@@ -1,7 +1,7 @@
 [![Tests](https://github.com/Yablargo/paranoid-requests/actions/workflows/test.yml/badge.svg)](https://github.com/Yablargo/paranoid-requests/actions/workflows/pylint_and_test.yml)
 [![Public Lists Online and Updated](https://github.com/Yablargo/paranoid-requests/actions/workflows/public_sources.yml/badge.svg)](https://github.com/Yablargo/paranoid-requests/actions/workflows/public_sources.yml)
 # paranoid-requests
-Paranoid wrapper around requests and grequests to automatically impersonate users and use randomized proxies.
+Paranoid wrapper around requests and aiohttp to automatically impersonate users and use randomized proxies.
 
 This project is designed to help those performing web-based pen testing, analytics, scraping, or other potentially
 risky activities a degree of both safety and scalability.
@@ -14,6 +14,11 @@ HTTP Proxies provided by https://github.com/TheSpeedX/PROXY-List and served thro
 
 User Agents provided by https://github.com/Kikobeats/top-user-agents and servd through jsdeliver! ❤️
 
+## Do no harm
+
+I ask that anyone reading this to take a moment to digest the following statement:
+
+>This is released to enable pen testers do their jobs in good faith. Please try to make today's world 1% better than yesterday's.
 
 ## Note on dangers of using public proxies
 

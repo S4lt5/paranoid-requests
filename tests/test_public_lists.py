@@ -1,11 +1,7 @@
-import os
-import pytest
-import requests
-from paranoid_requests.paranoid_core import ProxyListLoader
-from github import Github
 import datetime
-
-
+import requests
+from github import Github
+from paranoid_requests.paranoid_core import ProxyListLoader
 
 class TestPublicLists:
     """
@@ -14,14 +10,13 @@ class TestPublicLists:
 
     def test_http_proxies_list_exists_and_is_up_to_date(self):
         """Test that the public HTTP proxy list exists, and is no more than 7d old"""
-        response = requests.get(ProxyListLoader.public_http_proxies_url)
+        response = requests.get(ProxyListLoader.public_http_proxies_url,timeout=20)
         assert response.status_code == 200
 
-        g = Github()
-        repo = g.get_repo("TheSpeedX/PROXY-List")
+        repo = Github().get_repo("TheSpeedX/PROXY-List")
         print(repo.name)
         assert repo.name == "PROXY-List"
-        contents = repo.get_contents('http.txt')                
+        contents = repo.get_contents('http.txt')
         #Format is in: Tue, 15 Nov 2022 12:49:49 GMT
 
         #Check to see if it has been modified in the past week

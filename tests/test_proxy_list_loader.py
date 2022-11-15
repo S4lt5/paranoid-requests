@@ -80,4 +80,3 @@ class TestProxyListLoader:
         proxy_list = ProxyListLoader.from_default_public_proxy_list()
 
         assert len(proxy_list.proxies) > 10
-

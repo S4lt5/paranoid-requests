@@ -4,6 +4,8 @@ import re
 import itertools
 import requests
 
+
+
 class MissingProxyListError(Exception):
     """
     Used when ProxyList is called, but no or empty list of proxy servers is
@@ -63,41 +65,41 @@ class ProxyListLoader:
         if not os.path.exists(input_path) or not os.path.isfile(input_path):
             raise FileNotFoundError(f"The input file {input_path} does not exist.")
 
-    
+
         with open(input_path,'r') as file:
-            content = file.read()                        
+            content = file.read()
             return ProxyListLoader.from_string(content)
 
     @staticmethod
     def from_string(proxylist_contents):
         """Read a proxy list from a string, one proxy per line in host:port format"""
         proxies = []
-        for line in proxylist_contents.split("\n"):             
-            line = line.strip()            
+        for line in proxylist_contents.split("\n"):
+            line = line.strip()
             proxy = ProxyListLoader.parse_proxy_entry(line)
             proxies.append(proxy)
 
-        
+
         return ProxyList(proxies=proxies)
 
     @staticmethod
     def from_url(url):
         """Load a proxy list from a URL, the url must have text content with the format addresS:port, one per line."""
-        resp = requests.get(url)
-        
+        resp = requests.get(url,timeout=20)
+
         if resp.status_code != 200:
             raise ProxyListDownloadError(f"Can't download the proxy list from {url}")
-        
+
         return ProxyListLoader.from_string(resp.text)
 
-    
 
-    public_http_proxies_url = "https://cdn.jsdelivr.net/gh/TheSpeedX/PROXY-List@master/http.txt"    
-    @staticmethod 
+
+    public_http_proxies_url = "https://cdn.jsdelivr.net/gh/TheSpeedX/PROXY-List@master/http.txt"
+    @staticmethod
     def from_default_public_proxy_list():
         """Load a proxy list from TheSpeedX's list of public proxies
         See https://github.com/TheSpeedX/PROXY-List for up to date licensing info."""
-       
+
         return ProxyListLoader.from_url(ProxyListLoader.public_http_proxies_url)
 
 

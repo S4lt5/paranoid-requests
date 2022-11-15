@@ -23,6 +23,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r dev-requirements.txt
         pip install -r requirements.txt
-    - name: Analysing the code with pylint
+    - name: Running the "public sources" tests
       run: |
          pytest tests/test_public_lists.py

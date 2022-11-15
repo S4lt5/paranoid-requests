@@ -34,7 +34,7 @@ class TestProxyList:
             ProxyList([(1,2),None])
 
     def test_round_robin_generator(self):
-        """Test that I can load a valid proxy from a list, and that the generator gives 
+        """Test that I can load a valid proxy from a list, and that the generator gives
         expected results"""
 
         proxies = [
