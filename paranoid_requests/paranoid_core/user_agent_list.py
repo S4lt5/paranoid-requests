@@ -71,19 +71,21 @@ class UserAgentLoader:
     @staticmethod
     def from_string(useragent_list_contents):
         """Read a proxy list from a string, one proxy per line in host:port format"""
-        user_agents = []
+        agents = []
      
-        user_agents = json.loads(useragent_list_contents)
+        source_agents = json.loads(useragent_list_contents)
      
-        if len(user_agents) < 1:
+        if len(source_agents) < 1:
             raise UserAgentListDownloadError("A user agent list with no entries was encountered.")
 
-        for agent in user_agents:
+        for agent in source_agents:
+            if not type(agent) == str:
+                raise InvalidUserAgentError("A user agent must be a non-zero length string.")
             agent = agent.strip()
             UserAgentLoader.validate_user_agent_entry(agent)
-            user_agents.append(agent)
+            agents.append(agent)
 
-        return UserAgentList(user_agents=user_agents)
+        return UserAgentList(user_agents=agents)
 
     @staticmethod
     def from_url(url):
@@ -93,6 +95,7 @@ class UserAgentLoader:
         if resp.status_code != 200:
             raise UserAgentListDownloadError(f"Can't download the user agent list from {url}")
 
+        
         return UserAgentLoader.from_string(resp.text)
 
 
