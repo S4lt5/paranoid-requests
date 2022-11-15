@@ -2,6 +2,7 @@
 import os
 import re
 import itertools
+import requests
 
 class MissingProxyListError(Exception):
     """
@@ -24,7 +25,7 @@ class InvalidProxyError(Exception):
 
 
 class ProxyList:
-    """A list of public proxies, to be used in creating a round-robin generator
+    """A list of proxies, to be used in creating a round-robin generator
     exposed via the get_next_proxy() method"""
     def __init__(self, proxies):
         """
@@ -51,7 +52,7 @@ class ProxyList:
 
 
 #for determining if a host is valid
-PROXY_REGEX=re.compile("^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):([\\d]+)$")
+PROXY_REGEX=re.compile(r"^((?:(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*(?:[A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])):([\d]+)$")
 
 class ProxyListLoader:
     """A file-based proxy list loader that reads one entry per line in host:port format"""
@@ -79,6 +80,27 @@ class ProxyListLoader:
         
         return ProxyList(proxies=proxies)
 
+    @staticmethod
+    def from_url(url):
+        """Load a proxy list from a URL, the url must have text content with the format addresS:port, one per line."""
+        resp = requests.get(url)
+        
+        if resp.status_code != 200:
+            raise ProxyListDownloadError(f"Can't download the proxy list from {url}")
+        
+        return ProxyListLoader.from_string(resp.text)
+
+    
+
+    public_http_proxies_url = "https://cdn.jsdelivr.net/gh/TheSpeedX/PROXY-List@master/http.txt"    
+    @staticmethod 
+    def from_default_public_proxy_list():
+        """Load a proxy list from TheSpeedX's list of public proxies
+        See https://github.com/TheSpeedX/PROXY-List for up to date licensing info."""
+       
+        return ProxyListLoader.from_url(ProxyListLoader.public_http_proxies_url)
+
+
 
     @staticmethod
     def parse_proxy_entry(line):
@@ -88,4 +110,4 @@ class ProxyListLoader:
             raise InvalidProxyError(f"The proxy entry {line} is not in the correct format of 'host:port'")
 
         #match 1 is the host, match 2 is the port
-        return (match[1],match[2])
+        return (match[1],int(match[2]))
