@@ -1,5 +1,6 @@
 import os
 import pytest
+from json import JSONDecodeError
 from paranoid_requests.paranoid_core import UserAgentLoader, InvalidUserAgentError,UserAgentListDownloadError,MissingUserAgentListError
 
 
@@ -16,15 +17,16 @@ class TestUserAgentLoader:
     bad_json_path = os.path.join(artifacts_path,'test_bad_user_agents.json')
     good_path = os.path.join(artifacts_path,'test_good_user_agents.json')
 
-    def test_bad_proxy_list_fails(self):
+    def test_bad_user_agent_list_fails(self):
         """Test that invalid files or paths fail. Test that a good file loads successfully and can
         infinitely generate user agents from said list"""
         assert os.path.exists(TestUserAgentLoader.empty_path)
-        with pytest.raises(MissingUserAgentListError):
+        
+        with pytest.raises(JSONDecodeError):
             UserAgentLoader.from_json_file(TestUserAgentLoader.empty_path)
 
         assert os.path.exists(TestUserAgentLoader.bad_txt_path)
-        with pytest.raises(MissingUserAgentListError):
+        with pytest.raises(JSONDecodeError):
             UserAgentLoader.from_json_file(TestUserAgentLoader.bad_txt_path)
 
         assert os.path.exists(TestUserAgentLoader.bad_json_path)
@@ -54,7 +56,7 @@ class TestUserAgentLoader:
         """Tests for the url-based proxylist loader"""
 
 
-        agent_list = UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/tests/artifacts/test_good_user_agents.json")
+        agent_list = UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/main/tests/artifacts/test_good_user_agents.json")
         assert len(agent_list.user_agents) == 10
 
         assert "Mozilla/5.0 (Windows NT 10.0; rv:105.0) Gecko/20100101 Firefox/105.0" in agent_list.user_agents
@@ -71,10 +73,10 @@ class TestUserAgentLoader:
 
 
         with pytest.raises(UserAgentListDownloadError):
-            UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/tests/artifacts/test_agents_nonexistant.txt")
+            UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/main/tests/artifacts/test_agents_nonexistant.txt")
 
         with pytest.raises(InvalidUserAgentError):
-            UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/tests/artifacts/test_bad_user_agents.json")
+            UserAgentLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/main/tests/artifacts/test_bad_user_agents.json")
 
 
     def test_public_loader(self):

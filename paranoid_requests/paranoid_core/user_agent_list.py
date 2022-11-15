@@ -72,11 +72,9 @@ class UserAgentLoader:
     def from_string(useragent_list_contents):
         """Read a proxy list from a string, one proxy per line in host:port format"""
         user_agents = []
-        try:
-            user_agents = json.loads(useragent_list_contents)
-        except:
-            raise UserAgentListDownloadError("Could not parse JSON from the user agent list")
-
+     
+        user_agents = json.loads(useragent_list_contents)
+     
         if len(user_agents) < 1:
             raise UserAgentListDownloadError("A user agent list with no entries was encountered.")
 
@@ -90,7 +88,7 @@ class UserAgentLoader:
     @staticmethod
     def from_url(url):
         """Load a proxy list from a URL, the url must have text content with the format addresS:port, one per line."""
-        resp = requests.get(url,timeout=20)
+        resp = requests.get(url,timeout=1)
 
         if resp.status_code != 200:
             raise UserAgentListDownloadError(f"Can't download the user agent list from {url}")
