@@ -11,7 +11,7 @@ that can be used interchangably with the original modules, so that the 'paranoid
 altering the source tool or script.
 
 
-Http(s) provided by https://github.com/monosans/proxy-list/ and served through jsdeliver.
+Public http(s) proxy list provided by https://github.com/monosans/proxy-list/ and served through jsdeliver.
 
 User Agents provided by https://github.com/Kikobeats/top-user-agents and served through jsdeliver.
 
