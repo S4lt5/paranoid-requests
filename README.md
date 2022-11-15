@@ -59,16 +59,17 @@ resp = requests.get(host_addr,headers={"Accept": "application/json"})
 print("Default:\n\t",resp.json()['ip'])
 
 #By default, paranoid proxy/user agents are only set when creating a new session
+#This request does not get one, since we've not set new_identity_per_request, nor created a session
 resp = noided_requests.get(host_addr,headers={"Accept": "application/json"})
 print("Paranoid without session:\n\t",resp.json()['ip'])
 
-
+#We configure our desired proxy, and use the default one-identity-per-session configuration
 noided_requests.configure(new_identity_per_request=False,http_proxy_list=http_proxies,https_proxy_list=https_proxies)
 sess = noided_requests.Session()
 resp = sess.get(host_addr,headers={"Accept": "application/json"})
 print("Paranoid WITH session:\n\t",resp.json()['ip'])
 
-#You can manually specify here, or automatically crawl public proxies (not a great idea if you care about speed/security)
+#We now setup new-identity-per-session configuration, and each request get's its own IP and identity
 noided_requests.configure(new_identity_per_request=True,http_proxy_list=http_proxies,https_proxy_list=https_proxies)
 print("Paranoid Auto Session:\n")
 for x in range(2):
