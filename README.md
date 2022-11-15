@@ -32,6 +32,18 @@ For improved safety, you can use the ProxyList class and pass in your own list o
 
 ## Usage
 
+Most Basic Usage:
+
+```python
+import paranoid_requests.requests_wrapper as requests
+for x in range(20):
+    #each session automatically get's its own identity
+    #and in lieu of any configuration, it will try to pull public user agent lists and proxy lists
+    requests.Session().get("http://ifconfig.co")
+```
+
+With a little more explanation:
+
 ```python
 import paranoid_requests.requests_wrapper as noided_requests
 import requests
