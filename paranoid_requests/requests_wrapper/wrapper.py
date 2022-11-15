@@ -11,48 +11,56 @@ class ParanoidConfig:
     def get_config(cls):
         if cls.configuration == None:
             configure()
-        
+
         return cls.configuration
 
-    def __init__(self,new_identity_per_request=False,proxy_list=None,user_agent_list=None):
+    def __init__(self,new_identity_per_request=False,http_proxy_list=None,https_proxy_list=None,user_agent_list=None):
         self.new_identity_per_request=new_identity_per_request
 
-        # Use public defaults for proxy or useragent list if none provided
-        if proxy_list is None:
-            self.proxy_list = ProxyListLoader.from_default_public_proxy_list()                      
+        # Use public defaults for HTTP proxy list if none provided
+        if http_proxy_list is None:
+            self.http_proxy_list = ProxyListLoader.from_default_public_proxy_list(proxy_type='http')
         else:
-            self.proxy_list = ProxyList(proxy_list)
-        
+            self.http_proxy_list = ProxyList(http_proxy_list)
+
+        if https_proxy_list is None:
+            self.https_proxy_list = ProxyListLoader.from_default_public_proxy_list(proxy_type='https')
+        else:
+            self.https_proxy_list = ProxyList(http_proxy_list)
+
+
+        # use public defaults for useragent list if none provided
         if user_agent_list is None:
             self.user_agent_list = UserAgentLoader.from_default_public_user_agent_list()
         else:
             self.user_agent_list = user_agent_list
-        
 
 
 
 
 
 
-def configure(new_identity_per_request=False,proxy_list=None,user_agent_list=None):
+
+def configure(new_identity_per_request=False,http_proxy_list=None,https_proxy_list=None,user_agent_list=None):
     ParanoidConfig.configuration = ParanoidConfig(new_identity_per_request=new_identity_per_request,
-                                        proxy_list=proxy_list,
+                                        http_proxy_list=http_proxy_list,
+                                        https_proxy_list=https_proxy_list,
                                         user_agent_list=user_agent_list)
 
 
 
-def delete(url, params=None,**kwargs):      
+def delete(url, params=None,**kwargs):
     if ParanoidConfig.get_config().new_identity_per_request:
         s = Session()
         return s.delete(url, params=params,**kwargs)
-    else:    
+    else:
         return requests.delete(url,params=params,**kwargs)
 
-def get(url,params=None,**kwargs):    
-    if ParanoidConfig.get_config().new_identity_per_request:    
+def get(url,params=None,**kwargs):
+    if ParanoidConfig.get_config().new_identity_per_request:
         s = Session()
         return s.get(url, params=params,**kwargs)
-    else:    
+    else:
         return requests.get(url,params=params,**kwargs)
 
 def head(url, params=None,**kwargs):
@@ -74,20 +82,19 @@ def request(url, params=None,**kwargs):
     print("I GOT A REQUEST YO")
     return requests.request(url,params=params,**kwargs)
 
-class Session(requests.Session):    
+class Session(requests.Session):
     """Wrapper for requests.session that injects user agent and proxy values"""
     def __init__(self) -> None:
         super().__init__()
 
-        # if no config exists, create one        
-        http_proxy = ParanoidConfig.get_config().proxy_list.get_next_proxy()
-        address = http_proxy[0]
-        port = http_proxy[1]
+        # if no config exists, create one
+        http_proxy = ParanoidConfig.get_config().http_proxy_list.get_next_proxy()
+        https_proxy = ParanoidConfig.get_config().https_proxy_list.get_next_proxy()
         self.override_proxies = {
-            "http": f"http://{address}:{port}",
-            "https": f"https://{address}:{port}"            
+            "http": http_proxy,
+            "https": https_proxy
         }
-            
+
     def request(
         self,
         method,
@@ -106,12 +113,12 @@ class Session(requests.Session):
         verify=None,
         cert=None,
         json=None
-    ): 
+    ):
         return super().request(method, url, params, data, headers, cookies, files, auth, timeout, allow_redirects, self.override_proxies, hooks, stream, verify, cert, json)
 
 
-def session():       
-    
+def session():
+
     return Session()
 
 #Access wrapped module with requests member

@@ -1,9 +1,8 @@
 """ Module containing basic proxy list functionality, used by both paranoid implementations"""
 import os
-import re
 import itertools
 import requests
-
+import validators
 
 
 class MissingProxyListError(Exception):
@@ -20,7 +19,7 @@ class ProxyListDownloadError(Exception):
 
 class InvalidProxyError(Exception):
     """
-    Thrown when we can obviously see that the passed object is not a (addr,port) tuple
+    Thrown when we can obviously see that the passed object is not valid URL
     """
 
 
@@ -29,32 +28,32 @@ class InvalidProxyError(Exception):
 class ProxyList:
     """A list of proxies, to be used in creating a round-robin generator
     exposed via the get_next_proxy() method"""
-    def __init__(self, proxies):
+    def __init__(self, proxies=[]):
         """
         Take the passed proxy list, or create a blank one
 
-        Proxy is a list of tuples: [('address','port'),...]
+        Proxy is a list of urls e.g. http://192.168.2.55:8181
         """
         if not proxies or not hasattr(proxies, '__len__') or len(proxies) < 1:
             raise MissingProxyListError("A non empty proxylist must be provided to ProxyList()")
 
         for prox in proxies:
-            if not prox or not hasattr(proxies,'__len__') or len(prox) != 2:
-                raise InvalidProxyError("Each proxy must be a two-value tuple containing the address and port")
+            if validators.url(str(prox)) != True:
+                raise InvalidProxyError("Each https proxy specified must be a valid url")
 
 
         # do I really need this?
         self.proxies = proxies
+        
         #Create an infinite iterator that cycles through all of the proxies
-        self.generator = itertools.cycle(proxies)
+        self.generator = itertools.cycle(self.proxies)        
 
     def get_next_proxy(self):
-        """Return the next proxy to be used as a tuple (host,port)"""
+        """Return the next proxy URL"""
         return next(self.generator)
 
 
-#for determining if a host is valid
-PROXY_REGEX=re.compile(r"^((?:(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*(?:[A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])):([\d]+)$")
+
 
 class ProxyListLoader:
     """A file-based proxy list loader that reads one entry per line in host:port format"""
@@ -72,7 +71,7 @@ class ProxyListLoader:
 
     @staticmethod
     def from_string(proxylist_contents):
-        """Read a proxy list from a string, one proxy per line in host:port format"""
+        """Read a proxy list from a string, one URL per line"""
         proxies = []
         for line in proxylist_contents.split("\n"):
             line = line.strip()
@@ -84,7 +83,7 @@ class ProxyListLoader:
 
     @staticmethod
     def from_url(url):
-        """Load a proxy list from a URL, the url must have text content with the format addresS:port, one per line."""
+        """Load a proxy list from a URL. The response must have one URL per line and contain valid URLs"""
         resp = requests.get(url,timeout=20)
 
         if resp.status_code != 200:
@@ -94,22 +93,36 @@ class ProxyListLoader:
 
 
 
-    public_http_proxies_url = "https://cdn.jsdelivr.net/gh/TheSpeedX/PROXY-List@master/http.txt"
+    public_http_proxies_url = "https://cdn.jsdelivr.net/gh/monosans/proxy-list@main/proxies_geolocation_anonymous/http.txt"
     @staticmethod
-    def from_default_public_proxy_list():
-        """Load a proxy list from TheSpeedX's list of public proxies
-        See https://github.com/TheSpeedX/PROXY-List for up to date licensing info."""
+    def from_default_public_proxy_list(proxy_type="http"):
+        if proxy_type != "http" and proxy_type != "https":
+            raise ProxyListDownloadError("Must specify http or https for proxy type.")        
+        """Load a proxy list from https://github.com/monosans/proxy-list/
+        Check the source for up to date licensing info if you want to directly include this."""
+        resp = requests.get(ProxyListLoader.public_http_proxies_url)
 
-        return ProxyListLoader.from_url(ProxyListLoader.public_http_proxies_url)
+        if resp.status_code != 200:
+            raise ProxyListDownloadError("Received an error when dowloading the default public proxy list")
+        proxies = []
+        for line in resp.text.split("\n"):
+            #format:'http://176.192.70.58:8005|Russia|Moscow|Moscow
+            items = line.split("|")
+            if len(items) != 4:
+                raise ProxyListDownloadError("The proxy list was not in the expected format.")
+            if items[1] == "United States":                
+                #skip non-USA for performance and safety reasons
+                proxies.append(f"{proxy_type}://{items[0]}")            
+        return ProxyList(proxies=proxies)
 
 
 
     @staticmethod
     def parse_proxy_entry(line):
-        """Validate a line of text iput that will be turned into a proxy entry, then return a tuple of host,port"""
-        match = PROXY_REGEX.search(line)
-        if match is None:
-            raise InvalidProxyError(f"The proxy entry {line} is not in the correct format of 'host:port'")
+        """Validate a line of text iput that will be turned into a proxy entry, then return URL"""
+        url = str(line).strip()
 
-        #match 1 is the host, match 2 is the port
-        return (match[1],int(match[2]))
+        if validators.url(line) == True:
+            return url
+        
+        raise InvalidProxyError(f"Proxy URL {url} is not valid")        

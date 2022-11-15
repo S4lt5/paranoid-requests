@@ -32,16 +32,16 @@ class TestProxyListLoader:
 
         assert len(proxy_list.proxies) == 10
 
-        assert ('156.239.55.107',3128) in proxy_list.proxies
-        assert ('85.159.214.61',1080) in proxy_list.proxies
-        assert ('138.0.207.18',38328) in proxy_list.proxies
-        assert ('200.202.223.42',8080) in proxy_list.proxies
-        assert ('150.109.32.166',80) in proxy_list.proxies
-        assert ('47.74.152.29',8888) in proxy_list.proxies
-        assert ('177.93.50.234',999) in proxy_list.proxies
-        assert ('124.13.181.7',80) in proxy_list.proxies
-        assert ('155.4.244.218',80) in proxy_list.proxies
-        assert ('94.231.216.241',8085) in proxy_list.proxies
+        assert 'http://156.239.55.107:3128' in proxy_list.proxies
+        assert 'http://85.159.214.61:1080' in proxy_list.proxies
+        assert 'http://138.0.207.18:38328' in proxy_list.proxies
+        assert 'http://200.202.223.42:8080' in proxy_list.proxies
+        assert 'http://150.109.32.166:80' in proxy_list.proxies
+        assert 'http://47.74.152.29:8888' in proxy_list.proxies
+        assert 'http://177.93.50.234:999' in proxy_list.proxies
+        assert 'http://124.13.181.7:80' in proxy_list.proxies
+        assert 'http://155.4.244.218:80' in proxy_list.proxies
+        assert 'http://94.231.216.241:8085' in proxy_list.proxies
 
 
         # assert I can read far more than 10 out of the generator, try to read len * 2
@@ -55,16 +55,16 @@ class TestProxyListLoader:
         proxy_list = ProxyListLoader.from_url("https://raw.githubusercontent.com/Yablargo/paranoid-requests/main/tests/artifacts/test_proxies_good.txt")
         assert len(proxy_list.proxies) == 10
 
-        assert ('156.239.55.107',3128) in proxy_list.proxies
-        assert ('85.159.214.61',1080) in proxy_list.proxies
-        assert ('138.0.207.18',38328) in proxy_list.proxies
-        assert ('200.202.223.42',8080) in proxy_list.proxies
-        assert ('150.109.32.166',80) in proxy_list.proxies
-        assert ('47.74.152.29',8888) in proxy_list.proxies
-        assert ('177.93.50.234',999) in proxy_list.proxies
-        assert ('124.13.181.7',80) in proxy_list.proxies
-        assert ('155.4.244.218',80) in proxy_list.proxies
-        assert ('94.231.216.241',8085) in proxy_list.proxies
+        assert 'http://156.239.55.107:3128' in proxy_list.proxies
+        assert 'http://85.159.214.61:1080' in proxy_list.proxies
+        assert 'http://138.0.207.18:38328' in proxy_list.proxies
+        assert 'http://200.202.223.42:8080' in proxy_list.proxies
+        assert 'http://150.109.32.166:80' in proxy_list.proxies
+        assert 'http://47.74.152.29:8888' in proxy_list.proxies
+        assert 'http://177.93.50.234:999' in proxy_list.proxies
+        assert 'http://124.13.181.7:80' in proxy_list.proxies
+        assert 'http://155.4.244.218:80' in proxy_list.proxies
+        assert 'http://94.231.216.241:8085' in proxy_list.proxies
 
 
 
