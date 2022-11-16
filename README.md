@@ -104,3 +104,11 @@ Paranoid Auto Session with public proxy list:
      207.204.229.66
      209.107.196.142
 ```
+
+
+## Installation
+
+```console
+pip install flit
+flit install
+```
