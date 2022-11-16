@@ -48,20 +48,17 @@ With a little more explanation:
 import paranoid_requests.requests_wrapper as noided_requests
 import requests
 
+# First, get my IP from ifconfig.co
+host_addr = "http://ifconfig.co"
+
 # contrived small list of hard coded proxies 
 http_proxies = ["http://95.216.136.105:8888","http://135.181.254.248:8888"]
 https_proxies = ["https://95.216.136.105:8888","https://135.181.254.248:8888"]
 
-# First, get my IP from ifconfig.co
-host_addr = "http://ifconfig.co"
-# A naive small set of public proxies
-http_proxies = ["http://95.216.136.105:8888","http://135.181.254.248:8888"]
-https_proxies = ["https://95.216.136.105:8888","https://135.181.254.248:8888"]
 resp = requests.get(host_addr,headers={"Accept": "application/json"})
 print("Default:\n\t",resp.json()['ip'])
 
-#By default, paranoid proxy/user agents are only set when creating a new session
-#This request does not get one, since we've not set new_identity_per_request, nor created a session
+#By default, paranoid proxy/user agents are only set when creating a new session, so this uses the normal pass-through requests behavior here
 resp = noided_requests.get(host_addr,headers={"Accept": "application/json"})
 print("Paranoid without session:\n\t",resp.json()['ip'])
 
