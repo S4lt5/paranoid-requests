@@ -21,7 +21,7 @@ I ask that anyone reading this to take a moment to digest the following statemen
 
 >This is released to enable pen testers do their jobs in good faith. Please try to make today's world 1% better than yesterday's. 
 
-Don't use this tool for unauthorized or illegal acts.
+Please don't use this tool for unauthorized or illegal acts.
 
 ## Note on dangers (and horriffic performance) of using public proxies
 
