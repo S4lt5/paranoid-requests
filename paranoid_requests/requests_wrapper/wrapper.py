@@ -113,15 +113,20 @@ class Session(requests.Session):
     def __init__(self) -> None:
         super().__init__()
 
-        # if no config exists, create one
-        http_proxy = ParanoidConfig.get_config().http_proxy_list.get_next_proxy()
-        https_proxy = ParanoidConfig.get_config().https_proxy_list.get_next_proxy()
+        # if no config exists, create one, or get the one that exists
+        config = ParanoidConfig.get_config()
+
+        # add http/s proxies
+        http_proxy = config.http_proxy_list.get_next_proxy()
+        https_proxy = config.https_proxy_list.get_next_proxy()
         self.override_proxies = {
             "http": http_proxy,
             "https": https_proxy
         }
-        #TODO -- Use new user agents, duh
+        # add user agent
+        self.headers.update({'User-Agent': config.user_agent_list.get_next_user_agent()})
 
+      
     def request(
         self,
         method,

@@ -25,7 +25,7 @@ I ask that anyone reading this to take a moment to digest the following statemen
 
 Please assume any of the public proxies queried by the PublicProxyList class have malicious intent. These are completely free and anonymous services that will try to sniff your SSL traffic, trick you, or otherwise compromise you.
 
-* Don't pass credentials that are not public
+* Don't pass credentials or information that is not public
 * Don't put anything through these you don't want released to the world
 
 For improved safety, you can use the ProxyList class and pass in your own list of proxy strings.
@@ -50,7 +50,9 @@ import requests
 
 # First, get my IP from ifconfig.co
 host_addr = "http://ifconfig.co"
-
+# A naive small set of public proxies
+http_proxies = ["http://95.216.136.105:8888","http://135.181.254.248:8888"]
+https_proxies = ["https://95.216.136.105:8888","https://135.181.254.248:8888"]
 resp = requests.get(host_addr,headers={"Accept": "application/json"})
 print("Default:\n\t",resp.json()['ip'])
 
@@ -58,16 +60,14 @@ print("Default:\n\t",resp.json()['ip'])
 resp = noided_requests.get(host_addr,headers={"Accept": "application/json"})
 print("Paranoid without session:\n\t",resp.json()['ip'])
 
-http_proxies = ["http://95.216.136.105:8888","http://135.181.254.248:8888"]
-https_proxies = ["https://95.216.136.105:8888","https://135.181.254.248:8888"]
+
 noided_requests.configure(new_identity_per_request=False,http_proxy_list=http_proxies,https_proxy_list=https_proxies)
 sess = noided_requests.Session()
 resp = sess.get(host_addr,headers={"Accept": "application/json"})
 print("Paranoid WITH session:\n\t",resp.json()['ip'])
 
 #You can manually specify here, or automatically crawl public proxies (not a great idea if you care about speed/security)
-http_proxies = ["http://95.216.136.105:8888","http://135.181.254.248:8888"]
-https_proxies = ["https://95.216.136.105:8888","https://135.181.254.248:8888"]
+
 noided_requests.configure(new_identity_per_request=True,http_proxy_list=http_proxies,https_proxy_list=https_proxies)
 print("Paranoid Auto Session:\n")
 for x in range(2):
