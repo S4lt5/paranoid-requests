@@ -1,4 +1,4 @@
-from paranoid_core import UserAgentLoader, ProxyListLoader, ProxyList
+from paranoid_requests.paranoid_core import UserAgentLoader, ProxyListLoader, ProxyList
 import requests
 import random
 
