@@ -11,7 +11,7 @@ that can be used interchangably with the original modules, so that the 'paranoid
 altering the source tool or script.
 
 
-Http(s) provided by https://github.com/monosans/proxy-list/ and served through jsdeliver.
+Public http(s) proxy list provided by https://github.com/monosans/proxy-list/ and served through jsdeliver.
 
 User Agents provided by https://github.com/Kikobeats/top-user-agents and served through jsdeliver.
 
@@ -48,6 +48,10 @@ With a little more explanation:
 import paranoid_requests.requests_wrapper as noided_requests
 import requests
 
+# contrived small list of hard coded proxies 
+http_proxies = ["http://95.216.136.105:8888","http://135.181.254.248:8888"]
+https_proxies = ["https://95.216.136.105:8888","https://135.181.254.248:8888"]
+
 # First, get my IP from ifconfig.co
 host_addr = "http://ifconfig.co"
 # A naive small set of public proxies
@@ -57,17 +61,17 @@ resp = requests.get(host_addr,headers={"Accept": "application/json"})
 print("Default:\n\t",resp.json()['ip'])
 
 #By default, paranoid proxy/user agents are only set when creating a new session
+#This request does not get one, since we've not set new_identity_per_request, nor created a session
 resp = noided_requests.get(host_addr,headers={"Accept": "application/json"})
 print("Paranoid without session:\n\t",resp.json()['ip'])
 
-
+#We configure our desired proxy, and use the default one-identity-per-session configuration
 noided_requests.configure(new_identity_per_request=False,http_proxy_list=http_proxies,https_proxy_list=https_proxies)
 sess = noided_requests.Session()
 resp = sess.get(host_addr,headers={"Accept": "application/json"})
 print("Paranoid WITH session:\n\t",resp.json()['ip'])
 
-#You can manually specify here, or automatically crawl public proxies (not a great idea if you care about speed/security)
-
+#We now setup new-identity-per-session configuration, and each request get's its own IP and identity
 noided_requests.configure(new_identity_per_request=True,http_proxy_list=http_proxies,https_proxy_list=https_proxies)
 print("Paranoid Auto Session:\n")
 for x in range(2):
